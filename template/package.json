@@ -1,0 +1,11 @@
+{
+  "name": "dsh-vertical-video",
+  "private": true,
+  "scripts": {
+    "render": "node render.cjs",
+    "encode": "bash encode.sh"
+  },
+  "devDependencies": {
+    "playwright": "^1.62.0"
+  }
+}

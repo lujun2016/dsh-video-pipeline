@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<title>{{TITLE}}</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{width:1080px;height:1920px;overflow:hidden;background:#070b10;}
+  body{font-family:"PingFang SC","Hiragino Sans GB",sans-serif;color:#e6edf5;}
+  #stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:
+    radial-gradient(1200px 800px at 50% 10%, rgba(94,234,212,.07), transparent 60%),#070b10;}
+  #fx{position:absolute;inset:0;}
+  .shot{position:absolute;inset:0;opacity:0;}
+  .step{position:absolute;left:80px;top:236px;font-size:36px;letter-spacing:.16em;color:#5eead4;font-weight:600;}
+  .h2{position:absolute;left:80px;right:80px;font-weight:700;line-height:1.35;}
+  .body{position:absolute;left:80px;right:80px;font-size:40px;line-height:1.62;color:#c3d0e0;}
+  .small{position:absolute;left:80px;right:80px;font-size:27px;line-height:1.65;color:#9fb0c4;}
+  .anno{position:absolute;left:80px;right:80px;font-size:31px;line-height:1.6;color:#93a4b8;}
+  .panel{position:absolute;background:rgba(255,255,255,.045);border:1px solid rgba(255,255,255,.10);border-radius:20px;}
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="fx" width="1080" height="1920"></canvas>
+
+  <section id="s1" class="shot">
+    <div class="h2" id="s1t1" style="top:700px;font-size:72px;">{{TITLE}}</div>
+    <div class="body" id="s1t2" style="top:820px;font-size:40px;color:#5eead4;">{{SUBTITLE}}</div>
+    <div class="body" id="s1t3" style="top:920px;font-size:34px;">这条视频只跟一个概念走：{{THROUGH_CONCEPT}}</div>
+    <div class="anno" id="s1anno" style="top:1450px;">{{ONE_LINE_GOAL}}</div>
+  </section>
+
+  <section id="s2" class="shot">
+    <div class="step">步骤 01 / {{TOTAL_STEPS}} · {{STEP_NAME}}</div>
+    <div class="h2" id="s2h" style="top:300px;font-size:50px;">{{STEP_SUMMARY}}</div>
+    <div class="panel" id="s2box" style="left:80px;top:400px;width:920px;height:420px;padding:26px;">
+      <div class="body" style="position:static;font-size:28px;line-height:1.7;">{{REAL_EXAMPLE_TEXT}}</div>
+    </div>
+    <div class="small" id="s2b1" style="top:880px;">① {{PROBLEM_ONE}}</div>
+    <div class="small" id="s2b2" style="top:940px;">② {{PROBLEM_TWO}}</div>
+    <div class="small" id="s2b3" style="top:1000px;">③ {{PROBLEM_THREE}}</div>
+    <div class="anno" id="s2anno" style="top:1400px;">{{EXPLAIN_TERM_HERE}}</div>
+  </section>
+
+  <section id="s3" class="shot">
+    <div class="step">步骤 {{N}} / {{TOTAL_STEPS}} · {{LAST_STEP}}</div>
+    <div class="h2" id="s3h" style="top:300px;font-size:50px;">{{RECAP_TITLE}}</div>
+    <div id="s3chain" style="position:absolute;left:80px;top:430px;right:80px;"></div>
+    <div class="anno" id="s3anno" style="top:1500px;">{{CLOSING_LINE}}</div>
+  </section>
+</div>
+<script src="assets/data.js"></script>
+<script>
+const W=1080,H=1920,T=30;                 // T: 总时长（秒），按分镜改
+const $=id=>document.getElementById(id);
+const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
+const eo=x=>{x=cl(x);return 1-Math.pow(1-x,3);};
+const P=(t,a,b)=>cl((t-a)/(b-a));
+const cv=$('fx'), ctx=cv.getContext('2d');
+const setOp=(id,v)=>{const e=$(id); if(e) e.style.opacity=v;};
+const setTr=(id,v)=>{const e=$(id); if(e) e.style.transform=`translateY(${v}px)`;};
+
+const S={s1:[0,8],s2:[8,20],s3:[20,30]};   // 按实际分镜改
+const inS=(k,t)=>t>=S[k][0]&&t<S[k][1];
+const lt=(k,t)=>t-S[k][0];
+
+function bg(t){
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i<120;i++){
+    const x=(i*97.13)%W, y=(i*211.7)%H;
+    const a=.15+.35*Math.abs(Math.sin(t*.8+i));
+    ctx.fillStyle=`rgba(148,197,220,${a})`;
+    ctx.beginPath(); ctx.arc(x,y,1.5,0,6.283); ctx.fill();
+  }
+}
+
+const CHAIN=['{{STATION_1}}','{{STATION_2}}','{{STATION_3}}','{{STATION_4}}','{{STATION_5}}'];
+function s3(t){
+  setOp('s3',1);
+  setOp('s3h',eo(P(t,.1,.8))); setTr('s3h',(1-eo(P(t,.1,.8)))*24);
+  const c=$('s3chain');
+  if(!c.dataset.init){
+    c.dataset.init='1';
+    c.innerHTML=CHAIN.map((x,i)=>`<div id="s3c${i}" style="position:absolute;left:0;right:0;top:${i*130}px;height:100px;padding:20px 26px;border-radius:16px;background:rgba(255,255,255,.04);border:1px solid rgba(94,234,212,.22);">
+      <span style="font-size:34px;color:#5eead4;font-weight:700;margin-right:22px;">${i+1}</span>
+      <span style="font-size:30px;">${x}</span></div>`).join('');
+  }
+  CHAIN.forEach((x,i)=>{const p=eo(P(t,.5+i*.3,1.1+i*.3)); const e=$('s3c'+i); e.style.opacity=p; e.style.transform=`translateX(${(1-p)*-24}px)`;});
+  setOp('s3anno',eo(P(t,2.4,3.2)));
+}
+
+function render(t){
+  bg(t);
+  ['s1','s2','s3'].forEach(k=>setOp(k,0));
+  if(inS('s1',t)){setOp('s1',1);
+    setOp('s1t1',eo(P(t,.2,.9))); setTr('s1t1',(1-eo(P(t,.2,.9)))*30);
+    setOp('s1t2',eo(P(t,.6,1.3)));
+    setOp('s1t3',eo(P(t,1.2,2.0)));
+    setOp('s1anno',eo(P(t,2.4,3.2)));
+  } else if(inS('s2',t)){setOp('s2',1); const q=lt('s2',t);
+    setOp('s2h',eo(P(q,.1,.8)));
+    setOp('s2box',eo(P(q,.4,1.0))*.95);
+    setOp('s2b1',eo(P(q,1.4,2.0)));
+    setOp('s2b2',eo(P(q,1.9,2.5)));
+    setOp('s2b3',eo(P(q,2.4,3.0)));
+    setOp('s2anno',eo(P(q,3.4,4.2)));
+  } else if(inS('s3',t)) s3(lt('s3',t));
+}
+window.__seek=t=>render(t);
+window.__duration=T;
+render(0);
+</script>
+</body>
+</html>
