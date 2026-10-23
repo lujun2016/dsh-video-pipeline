@@ -14,6 +14,9 @@
 | `CHECKLIST.md` | 内容/排版/数据/技术的检查清单 |
 | `template/` | 可运行的骨架：时间轴、逐帧截图、编码脚本 |
 | `docs/lessons.md` | 实际做片时踩过的坑与对策 |
+| `docs/audio.md` | numpy 合成配乐与音效、响度标准、混音命令 |
+| `docs/3d.md` | three.js 3D 镜头：适用场景、与时间轴集成、中文处理 |
+| `docs/renderers.md` | 渲染器选型：Playwright（默认）/ 纯代码离屏（可选）/ 混合 |
 | `docs/storyboard.example.md` | 分镜文本稿的格式示例 |
 
 ## 快速开始
@@ -22,8 +25,14 @@
 2. 按 `WORKFLOW.md` 走：先出分镜文本稿，确认后再做画面。
 3. 把 `template/index.html` 复制成你的项目 `index.html`，按分镜填镜头。
 4. 真实数据写进 `assets/data.js`（`window.DATA = {...}`），图片放 `assets/`。
-5. `node render.cjs` 逐帧截图 → `bash encode.sh` 合成 MP4。
-6. 按 `CHECKLIST.md` 验收。
+5. 抽 `timeline.json`（镜头起止 + 音效事件），画面和配乐都读它。
+6. `node render.cjs` 逐帧截图 → `bash encode.sh` 合成无声 MP4。
+7. `python3 make_audio.py --timeline timeline.json --out bed.wav` 生成配乐。
+8. ffmpeg 混音 → 成片；按 `CHECKLIST.md` 验收。
+
+> **v0.2 方案说明**：`make_audio.py` 与 `render-offscreen.cjs` 尚未随模板提供实现，
+> 接口、参数与验收标准见 `docs/audio.md` 与 `docs/renderers.md`；`timeline.example.json`
+> 是可直接套用的格式示例。
 
 ## 依赖
 
@@ -41,3 +50,10 @@
 ## 许可证
 
 [MIT](LICENSE) © 2026 lujun2016
+
+
+## 方案版本
+
+- **v0.1**：Canvas 2D + Playwright 逐帧 + ffmpeg 合成（无声）
+- **v0.2（当前）**：在 v0.1 上吸收——numpy 合成配乐、`timeline.json` 音画共用、
+  three.js 3D 镜头（可选，建议 2–3 镜）、纯代码离屏渲染（可选，用于无文字镜头）
