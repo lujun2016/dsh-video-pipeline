@@ -4,9 +4,10 @@ const { chromium } = require('playwright');
 const path = require('path');
 const fs = require('fs');
 
-const FPS = 30;
-const DUR = 30;            // 改成 index.html 里的总时长
-const TOTAL = FPS * DUR;
+const tl = JSON.parse(fs.readFileSync('timeline.json', 'utf8'));
+const FPS = (tl.meta && tl.meta.fps) || 30;
+const DUR = (tl.meta && tl.meta.duration) || 30;
+const TOTAL = Math.round(FPS * DUR);
 const dir = 'frames/seq';
 
 (async () => {
@@ -14,7 +15,10 @@ const dir = 'frames/seq';
   fs.mkdirSync(dir, { recursive: true });
 
   const browser = await chromium.launch();
-  const page = await browser.newPage({ viewport: { width: 1080, height: 1920 } });
+  const page = await browser.newPage({
+    viewport: { width: (tl.meta && tl.meta.width) || 1080, height: (tl.meta && tl.meta.height) || 1920 }
+  });
+  await page.addInitScript(t => { window.__TIMELINE = t; }, tl);
   await page.goto('file://' + path.resolve('index.html'));
   await page.waitForTimeout(1000);
 

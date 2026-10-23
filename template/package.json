@@ -3,9 +3,18 @@
   "private": true,
   "scripts": {
     "render": "node render.cjs",
-    "encode": "bash encode.sh"
+    "encode": "bash encode.sh",
+    "audio": "python3 make_audio.py --timeline timeline.json --out bed.wav",
+    "mux": "bash mux.sh",
+    "build": "npm run render && npm run encode && npm run audio && npm run mux",
+    "render:offscreen": "node render-offscreen.cjs",
+    "render:3d": "node render-3d.cjs"
   },
   "devDependencies": {
     "playwright": "^1.62.0"
+  },
+  "optionalDependencies": {
+    "@napi-rs/canvas": "^0.1.60",
+    "three": "^0.170.0"
   }
 }

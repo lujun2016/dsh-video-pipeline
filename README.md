@@ -30,9 +30,9 @@
 7. `python3 make_audio.py --timeline timeline.json --out bed.wav` 生成配乐。
 8. ffmpeg 混音 → 成片；按 `CHECKLIST.md` 验收。
 
-> **v0.2 方案说明**：`make_audio.py` 与 `render-offscreen.cjs` 尚未随模板提供实现，
-> 接口、参数与验收标准见 `docs/audio.md` 与 `docs/renderers.md`；`timeline.example.json`
-> 是可直接套用的格式示例。
+> **v0.2 已可跑**：`template/` 里包含 `timeline.json`、`make_audio.py`、`encode.sh`、`mux.sh`，
+> 按 `template/README.md` 的步骤即可从零出片（无声母版 → 配乐 → 混音）。
+> `render-offscreen.cjs` 是可选渲染器，用法见 `docs/renderers.md`。
 
 ## 依赖
 
@@ -51,6 +51,15 @@
 
 [MIT](LICENSE) © 2026 lujun2016
 
+
+## 可选模块（已实现）
+
+| 命令 | 说明 |
+|---|---|
+| `npm run render:offscreen` | 纯代码离屏渲染（@napi-rs/canvas），无 DOM 排版，适合无文字镜头 |
+| `npm run render:3d` | three.js 3D 示例（粒子关系图），起本地静态服务器后逐帧截图 |
+
+两者都在 `template/` 下，依赖放在 `optionalDependencies`，装不上不影响主流程。
 
 ## 方案版本
 

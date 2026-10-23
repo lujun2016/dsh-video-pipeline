@@ -3,3 +3,4 @@ check/
 node_modules/
 *.mp4
 .DS_Store
+*.wav

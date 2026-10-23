@@ -18,7 +18,7 @@
 - 实现：node-canvas / skia-canvas，或 Python（PIL + numpy）直接画
 - 优点：快（可达 0.01–0.05 s/帧），不依赖浏览器
 - 缺点：没有 DOM 排版，中文断行要自己算；three.js 需要 headless-gl
-- 命令：`node render-offscreen.cjs`
+- 命令：`node render-offscreen.cjs`（已实现，模板里可直接跑）
 
 ## 混合模式
 

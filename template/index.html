@@ -51,7 +51,12 @@
 </div>
 <script src="assets/data.js"></script>
 <script>
-const W=1080,H=1920,T=30;                 // T: 总时长（秒），按分镜改
+const TL = window.__TIMELINE || { meta: { duration: 30 }, shots: [
+  { start: 0, end: 8 }, { start: 8, end: 20 }, { start: 20, end: 30 }
+] };
+const W = (TL.meta && TL.meta.width) || 1080;
+const H = (TL.meta && TL.meta.height) || 1920;
+const T = (TL.meta && TL.meta.duration) || 30;   // 总时长来自 timeline.json
 const $=id=>document.getElementById(id);
 const cl=(x,a=0,b=1)=>Math.min(b,Math.max(a,x));
 const eo=x=>{x=cl(x);return 1-Math.pow(1-x,3);};
@@ -60,7 +65,8 @@ const cv=$('fx'), ctx=cv.getContext('2d');
 const setOp=(id,v)=>{const e=$(id); if(e) e.style.opacity=v;};
 const setTr=(id,v)=>{const e=$(id); if(e) e.style.transform=`translateY(${v}px)`;};
 
-const S={s1:[0,8],s2:[8,20],s3:[20,30]};   // 按实际分镜改
+const S = {};
+TL.shots.forEach((sh, i) => { S['s' + (i + 1)] = [sh.start, sh.end]; });   // 由 timeline.json 生成
 const inS=(k,t)=>t>=S[k][0]&&t<S[k][1];
 const lt=(k,t)=>t-S[k][0];
 

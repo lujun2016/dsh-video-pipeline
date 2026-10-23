@@ -1,0 +1,14 @@
+{
+  "meta": { "fps": 30, "width": 1080, "height": 1920, "duration": 30, "background": "#070b10" },
+  "shots": [
+    { "id": "s1", "start": 0,  "end": 8,  "name": "开场",   "renderer": "dom2d" },
+    { "id": "s2", "start": 8,  "end": 20, "name": "步骤示例", "renderer": "dom2d" },
+    { "id": "s3", "start": 20, "end": 30, "name": "收尾",   "renderer": "dom2d" }
+  ],
+  "events": [
+    { "at": 8.0,  "type": "transition", "sfx": "whoosh", "gain": 0.5 },
+    { "at": 20.0, "type": "transition", "sfx": "whoosh", "gain": 0.5 },
+    { "at": 24.5, "type": "counter",    "sfx": "tick",   "gain": 0.3 }
+  ],
+  "audio": { "bpm": 90, "key": "A minor", "bed": "pad+softhat", "lufs": -16, "truePeak": -1.5 }
+}
